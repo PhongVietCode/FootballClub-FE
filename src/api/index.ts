@@ -6,11 +6,12 @@ import type {
 } from "@reduxjs/toolkit/query"
 import { Mutex } from "async-mutex"
 import type { RootState } from "@/store"
+import { appConstant } from "@/constant"
 
 // create a new mutex
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8080/api/v1",
+  baseUrl: appConstant.BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token
     if (token) {
