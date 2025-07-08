@@ -38,7 +38,7 @@ const ContestDetail = () => {
           )}`}</span>
         </div>
       </div>
-      {data?.result.teams == null ? (
+      {data?.result.teams == null || data.result.teams.length === 0 ? (
         <div className="py-4">
           <Button onClick={() => navigate(`/contests/${contestId}/pick-mem`)}>
             Tiến hành chia đội
@@ -119,9 +119,9 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
       <div
         style={{
           color: getColor().textColor,
-          textAlign:'center',
+          textAlign: "center",
           fontSize: 18,
-          fontWeight: '600'
+          fontWeight: "600",
         }}>
         {getColor().name}
       </div>
