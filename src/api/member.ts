@@ -18,7 +18,7 @@ const memberAPI = api.injectEndpoints({
     }),
     getListMember: builder.query<
       AppResponse<MemberProfile[]>,
-      { organizationId?: string; name?: string }
+      { organizationId?: string; name?: string, contestId?:string }
     >({
       query: (data) => ({
         url: "/members",

@@ -46,7 +46,7 @@ const MainLayout = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col h-screen">
         <div className="w-full flex flex-row px-2 py-4 sticky top-0 bg-white shadow-sm z-10">
           <SidebarTrigger />
           <div className="flex-1 flex flex-row justify-end items-center gap-4">

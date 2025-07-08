@@ -18,7 +18,7 @@ const ContestDetail = () => {
     return <div>Đang tải dữ liệu</div>
   }
   return (
-    <div className="flex-1 px-4 flex flex-col overflow-hidden max-h-screen">
+    <div className="flex-1 px-4 flex flex-col h-full overflow-hidden">
       <div className="font-semibold text-xl py-4">Thông tin chi tiết</div>
       <div>
         <div>
@@ -31,7 +31,6 @@ const ContestDetail = () => {
           </span>
         </div>
         <div>
-          {/* Giờ: {`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`} */}
           Giờ:{" "}
           <span className="font-semibold text-lg">{`${date.toLocaleTimeString(
             "vi"

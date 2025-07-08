@@ -19,6 +19,10 @@ const ContestSplitTeam = () => {
   const { data, isSuccess } = useGetListMemberQuery({
     organizationId: orgId,
   })
+  const { data: pickedMemList, isSuccess: isLoadedPickedList } =
+    useGetListMemberQuery({
+      contestId: contestId,
+    })
   const [joinContestByList, { isLoading }] = useJoinByListMutation()
 
   const [memberAvail, setMemberAvail] = useState<MemberProfile[]>(
@@ -50,12 +54,19 @@ const ContestSplitTeam = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
+  useEffect(() => {
+    if (pickedMemList?.result) {
+      setMemberPicked(pickedMemList?.result)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadedPickedList])
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="font-semibold text-xl mt-4">Chia team</div>
+    <div className="flex-1 flex flex-col h-full overflow-scroll">
+      <div className="font-semibold text-xl">Chia team</div>
       <div>Vui lòng chọn thành viên tham dự trận đấu</div>
-      <div className="grid grid-cols-2 grid-rows-1 gap-8 w-[95%] self-center my-4  h-[900px]">
-        <div className="overflow-scroll pb-2">
+
+      <div className="grid grid-cols-2 grid-rows-3 gap-8 w-[95%] self-center h-full">
+        <div className="overflow-scroll pb-2 row-span-2">
           <div className="pt-4 sticky top-0 z-10 bg-white">
             Danh sách thành viên:
           </div>
@@ -93,7 +104,7 @@ const ContestSplitTeam = () => {
             )}
           />
         </div>
-        <div className="overflow-scroll pb-2">
+        <div className="overflow-scroll pb-2 row-span-2">
           <div className="flex flex-row justify-between py-4 sticky top-0 z-10 bg-white">
             <div>Danh sách thành viên tham dự:</div>
             <div>Tổng: {memberPicked.length} thành viên</div>
@@ -116,6 +127,10 @@ const ContestSplitTeam = () => {
                       setMemberPicked((list) =>
                         list.filter((mem) => mem.id !== item.id)
                       )
+                    } else {
+                      setMemberPicked((list) =>
+                        list.filter((mem) => mem.id !== item.id)
+                      )
                     }
                   }}>
                   <MemberItem member={item} />
@@ -124,14 +139,15 @@ const ContestSplitTeam = () => {
             />
           </div>
         </div>
-      </div>
-      <div className="p-4 self-center">
-        <Button
-          className="w-[400px]"
-          onClick={handleSplitTeam}
-          disabled={isLoading}>
-          Xác nhận
-        </Button>
+
+        <div className="col-span-2 row-start-3 flex flex-row justify-center items-start">
+          <Button
+            className="w-[400px]"
+            onClick={handleSplitTeam}
+            disabled={isLoading}>
+            Xác nhận
+          </Button>
+        </div>
       </div>
     </div>
   )
