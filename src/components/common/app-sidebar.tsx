@@ -26,16 +26,16 @@ export function AppSidebar() {
         </SidebarHeader>
         <SidebarMenu>
           {appConstant.SIDE_BAR.map((item) => (
-            <SidebarMenuItem key={item.title} className="py-2 px-4">
+            <SidebarMenuItem key={item.title} className="mx-2 my-1">
               <SidebarMenuButton
                 onClick={() => {
                   sessionStorage.setItem("cur_loc", item.url)
                   navigate(item.url)
                 }}
                 asChild
-                className={`hover:bg-blue-200 ${
+                className={`${
                   path.pathname === `${item.url}` &&
-                  "bg-blue-500 text-white text-md"
+                  "bg-gray-300 text-black hover:bg-gray-300"
                 }`}>
                 <div>
                   <item.icon />

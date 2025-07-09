@@ -41,7 +41,7 @@ const SplitTeamPage = () => {
   }, [contestId])
   return (
     <div>
-      <div>Kết quả chia đội</div>
+      <div className="py-2">Kết quả chia đội</div>
       {isSplitting ? (
         <div>Đang chia đội...</div>
       ) : (
@@ -98,14 +98,14 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
     switch (team.color) {
       case TeamColor.RED:
         return {
-          bgColor: "#FF3F33",
+          bgColor: "#E97777",
           textColor: "white",
           name: "Đỏ",
         }
       case TeamColor.WHITE:
         return {
           bgColor: "white",
-          textColor: "black",
+          textColor: "#000000",
           name: "Trắng",
         }
       case TeamColor.BLUE:
@@ -116,7 +116,7 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
         }
       case TeamColor.GREEN:
         return {
-          bgColor: "#347433",
+          bgColor: "#A5B68D",
           textColor: "white",
           name: "Lục",
         }

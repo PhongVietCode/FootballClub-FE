@@ -1,18 +1,28 @@
 import { api } from "."
 import type { AppResponse } from "@/types/response"
-import type { Contest, TeamSplitResponse, TeamUpdateRequest } from "@/types/contest"
+import type {
+  Contest,
+  TeamSplitResponse,
+  TeamUpdateRequest,
+} from "@/types/contest"
 import type { CreateContestSchema } from "@/schemas/contest/CreateContest"
 
 const contestAPI = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createContest: builder.mutation<AppResponse<Contest>, CreateContestSchema>({
+    createContest: builder.mutation<
+      AppResponse<Contest>,
+      { memberId: string } & { data: CreateContestSchema }
+    >({
       query: (data) => ({
         url: "/contests",
         method: "POST",
-        body: data,
+        body: {
+          memberId: data.memberId,
+          ...data.data,
+        },
       }),
-      invalidatesTags: [{ type: "Contest", id: "LIST" }],
+      invalidatesTags: ["Contest"],
     }),
     updateContest: builder.mutation<
       AppResponse<Contest>,
@@ -23,9 +33,12 @@ const contestAPI = api.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags(result) {
-        return [{ type: "Contest", id: result?.result.id }]
-      },
+      invalidatesTags: (result) => [
+        {
+          type: "Contest" as const,
+          id: result?.result.id,
+        },
+      ],
     }),
     getContestList: builder.query<AppResponse<Contest[]>, { id: string }>({
       query: (data) => ({
@@ -35,7 +48,20 @@ const contestAPI = api.injectEndpoints({
           orgId: data.id,
         },
       }),
-      providesTags: [{ type: "Contest", id: "LIST" }],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.result.map(({ id }) => ({
+                type: "Contest" as const,
+                id,
+              })),
+              "Contest",
+              {
+                type: "Contest" as const,
+                id: "LIST",
+              },
+            ]
+          : ["Contest"],
     }),
     getContestDetail: builder.query<AppResponse<Contest>, { id: string }>({
       query: (data) => ({
@@ -52,6 +78,15 @@ const contestAPI = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    deleteContest: builder.mutation<AppResponse<string>, { contestId: string }>(
+      {
+        query: (data) => ({
+          url: `/contests/${data.contestId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Contest"],
+      }
+    ),
   }),
 })
 export const {
@@ -63,4 +98,5 @@ export const {
   useSplitTeamQuery,
   useLazySplitTeamQuery,
   useUpdateContestMutation,
+  useDeleteContestMutation,
 } = contestAPI

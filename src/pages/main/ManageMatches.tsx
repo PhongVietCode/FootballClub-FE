@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import DeleteMemberDialog from "@/components/custom/delete-contest-dialog"
 const ManageMatches = () => {
   const orgId = useOrgId()
   const { data, isLoading, isFetching } = useGetContestListQuery({ id: orgId })
@@ -30,28 +31,37 @@ const ManageMatches = () => {
                 {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">Ngày</TableHead>
-                    <TableHead>Giờ</TableHead>
-                    <TableHead>Địa chỉ</TableHead>
+                    <TableHead className="w-[100px]">Ngày</TableHead>
+                    <TableHead className="w-[100px]">Giờ</TableHead>
+                    <TableHead className="w-[200px]">Địa chỉ</TableHead>
                     <TableHead className="text-left">Số đội</TableHead>
+                    <TableHead className="text-left">Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.result.map((item, index) => {
-                    const date = new Date(item.localDateTime || "")
+                  {data.result.map((contest, index) => {
+                    const date = new Date(contest.dateTime || "")
                     return (
                       <TableRow
                         key={index}
                         onClick={() => {
-                          navigate(`/contests/${item.id}`)
+                          navigate(`/contests/${contest.id}`)
                         }}>
                         <TableCell className="font-medium">
                           {date.toLocaleDateString("vi")}
                         </TableCell>
                         <TableCell>{date.toLocaleTimeString("vi")}</TableCell>
-                        <TableCell>{item.addressName}</TableCell>
+                        <TableCell>{contest.addressName}</TableCell>
                         <TableCell className="text-left">
-                          {item.teamCount}
+                          {contest.teamCount}
+                        </TableCell>
+                        <TableCell
+                          onClick={(event) => {
+                            event.stopPropagation()
+                          }}>
+                          <div className="my-1 flex flex-row gap-4">
+                            <DeleteMemberDialog contestId={contest.id} />
+                          </div>
                         </TableCell>
                       </TableRow>
                     )
@@ -65,6 +75,7 @@ const ManageMatches = () => {
     </div>
   )
 }
+
 // const ContestItem = ({
 //   contest,
 //   onClick,

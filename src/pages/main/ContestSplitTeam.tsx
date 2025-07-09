@@ -67,20 +67,21 @@ const ContestSplitTeam = () => {
 
       <div className="grid grid-cols-2 grid-rows-3 gap-8 w-[95%] self-center h-full">
         <div className="overflow-scroll pb-2 row-span-2">
-          <div className="pt-4 sticky top-0 z-10 bg-white">
+          <div className="pt-4 pb-[2px] sticky top-0 z-10 bg-white">
             Danh sách thành viên:
+            <div className="mx-2 my-4 ring-1 rounded-md flex flex-row items-center pr-2">
+              <Input
+                className="border-none shadow-none focus-visible:ring-0"
+                placeholder="Tên thành viên"
+                value={nameFilter}
+                onChange={(event) => {
+                  setNameFilter(event.target.value)
+                }}
+              />
+              <Search className="text-gray-500" />
+            </div>
           </div>
-          <div className="mx-2 my-4 ring-1 rounded-md flex flex-row items-center pr-2">
-            <Input
-              className="border-none shadow-none focus-visible:ring-0"
-              placeholder="Tên thành viên"
-              value={nameFilter}
-              onChange={(event) => {
-                setNameFilter(event.target.value)
-              }}
-            />
-            <Search className="text-gray-500" />
-          </div>
+
           <ListRender
             data={filteredMember}
             renderItem={(item, index) => (

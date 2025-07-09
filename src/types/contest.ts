@@ -5,7 +5,7 @@ export interface Contest{
     address: string
     addressName: string
     teamCount: number
-    localDateTime: string
+    dateTime: string
     teams: TeamSplitResponse[]
 }
 export interface TeamUpdateRequest {

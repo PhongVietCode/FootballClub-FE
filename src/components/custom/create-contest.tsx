@@ -21,8 +21,11 @@ import { useCreateContestMutation } from "@/api/contest"
 import { Form } from "../ui/form"
 import FormInput from "../common/form-input"
 import ChooseAddress from "./choose-address"
+import { useAppSelector } from "@/hooks"
 
 const CreateContestDialog = () => {
+  const { choosenOrg } = useAppSelector((state) => state.user)
+
   const [open, setOpen] = useState(false)
   const orgId = useOrgId()
   const [createContest, { isLoading }] = useCreateContestMutation()
@@ -37,8 +40,13 @@ const CreateContestDialog = () => {
   })
   async function onSubmit(values: CreateContestSchema) {
     try {
-      await createContest({ ...values, orgId }).unwrap()
-      setOpen(false)
+      if (choosenOrg) {
+        await createContest({
+          data: values,
+          memberId: choosenOrg.member.id,
+        }).unwrap()
+        setOpen(false)
+      }
     } catch (error) {
       console.log(error)
     }

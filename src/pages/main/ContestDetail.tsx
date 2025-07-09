@@ -13,7 +13,7 @@ const ContestDetail = () => {
   const { data, isLoading, isFetching } = useGetContestDetailQuery({
     id: contestId || "",
   })
-  const date = new Date(data?.result.localDateTime || "")
+  const date = new Date(data?.result.dateTime || "")
   if (isLoading || isFetching) {
     return <div>Đang tải dữ liệu</div>
   }
@@ -78,25 +78,25 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
     switch (team.color) {
       case TeamColor.RED:
         return {
-          bgColor: "#FF3F33",
+          bgColor: "#E97777",
           textColor: "white",
           name: "Đỏ",
         }
       case TeamColor.WHITE:
         return {
           bgColor: "white",
-          textColor: "black",
+          textColor: "#000000",
           name: "Trắng",
         }
       case TeamColor.BLUE:
         return {
-          bgColor: "#093FB4",
+          bgColor: "#687FE5",
           textColor: "white",
           name: "Xanh dương",
         }
       case TeamColor.GREEN:
         return {
-          bgColor: "#347433",
+          bgColor: "#A5B68D",
           textColor: "white",
           name: "Lục",
         }
@@ -127,16 +127,17 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
       <ListRender
         data={team.players}
         renderItem={(player, index) => (
-          <div key={index} className="flex flex-row justify-between py-2">
+          <div
+            key={index}
+            className={`flex flex-row justify-between py-2 font-semibold border-b-[2px] border-solid border-[${
+              getColor().textColor
+            }]`}>
             <span>{player.name}</span>
             <span>{player.elo}</span>
           </div>
         )}
       />
-      <div
-        className={`flex flex-row justify-between border-t-[2px] border-solid py-2 border-[${
-          getColor().textColor
-        }]`}>
+      <div className={`flex flex-row justify-between pt-2`}>
         <div>Tổng elo: </div>
         <div>{team.totalElo}</div>
       </div>

@@ -22,5 +22,6 @@ export const appConstant = {
       url: "/setting",
       icon: Settings,
     },
-  ],
+  ]
 }
+
