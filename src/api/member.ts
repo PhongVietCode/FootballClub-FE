@@ -59,8 +59,8 @@ const memberAPI = api.injectEndpoints({
       query: (data) => ({
         url: `/members/${data.memberId}`,
         method: "DELETE",
-        invalidatesTags: () => ["Member"],
       }),
+      invalidatesTags: () => ["Member"],
     }),
   }),
 })

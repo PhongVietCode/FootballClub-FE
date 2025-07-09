@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import DeleteMemberDialog from "@/components/custom/delete-contest-dialog"
+import DeleteContestDialog from "@/components/custom/delete-contest-dialog"
 const ManageMatches = () => {
   const orgId = useOrgId()
   const { data, isLoading, isFetching } = useGetContestListQuery({ id: orgId })
@@ -60,7 +60,7 @@ const ManageMatches = () => {
                             event.stopPropagation()
                           }}>
                           <div className="my-1 flex flex-row gap-4">
-                            <DeleteMemberDialog contestId={contest.id} />
+                            <DeleteContestDialog contestId={contest.id} />
                           </div>
                         </TableCell>
                       </TableRow>

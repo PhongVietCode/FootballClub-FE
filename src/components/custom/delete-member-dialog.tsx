@@ -1,24 +1,24 @@
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "../ui/button"
 import { useState } from "react"
 import { Trash2 } from "lucide-react"
-import { useDeleteContestMutation } from "@/api/contest"
-const DeleteContestDialog = ({ contestId }: { contestId: string }) => {
-  const [deleteContest, { isLoading }] = useDeleteContestMutation()
+import { useDeleteMemberMutation } from "@/api/member"
+const DeleteMemberDialog = ({ memberId }: { memberId: string }) => {
+  const [deleteContest, { isLoading }] = useDeleteMemberMutation()
   const [open, setOpen] = useState(false)
   async function onSubmit() {
     try {
       await deleteContest({
-        contestId,
+        memberId,
       }).unwrap()
       setOpen(false)
     } catch (error) {
@@ -32,17 +32,17 @@ const DeleteContestDialog = ({ contestId }: { contestId: string }) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Xoá trận đấu này?</DialogTitle>
-          <DialogDescription>
-            Cân nhắc kĩ trước khi xoá. Team, kết quả và người chơi trong trận
-            đấu cũng sẽ bị xoá
-          </DialogDescription>
+          <DialogTitle>Xoá thành viên này?</DialogTitle>
+          <DialogDescription>Cân nhắc kĩ trước khi xoá nhé</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Huỷ</Button>
           </DialogClose>
-          <Button disabled={isLoading} onClick={onSubmit} className="bg-red-500">
+          <Button
+            disabled={isLoading}
+            onClick={onSubmit}
+            className="bg-red-500">
             Xoá
           </Button>
         </DialogFooter>
@@ -51,4 +51,4 @@ const DeleteContestDialog = ({ contestId }: { contestId: string }) => {
   )
 }
 
-export default DeleteContestDialog
+export default DeleteMemberDialog
