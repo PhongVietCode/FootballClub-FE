@@ -1,31 +1,43 @@
 import { useLazySplitTeamQuery, useUpdateContestMutation } from "@/api/contest"
 import ListRender from "@/components/common/list-render"
 import { Button } from "@/components/ui/button"
+import { getTeamColorStyle } from "@/constant"
 import type { TeamSplitResponse } from "@/types/contest"
-import { TeamColor } from "@/types/team"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { TeamColor } from "@/types/team"
 const SplitTeamPage = () => {
   const { contestId } = useParams()
   const navigate = useNavigate()
   const [splitTeam, { data: teamSplitted, isLoading: isSplitting }] =
     useLazySplitTeamQuery()
   const [updateContest, { isLoading: isUpdating }] = useUpdateContestMutation()
+  const [teamColor, setTeamColor] = useState<string[]>([])
   const handleSplitTeam = async (preferRefetch: boolean) => {
-    if (contestId) {
-      await splitTeam({ id: contestId }, preferRefetch)
+    try {
+      if (contestId) {
+        const res = await splitTeam({ id: contestId }, preferRefetch).unwrap()
+        setTeamColor(res.result.map((team) => team.color))
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
   const handleUpdateContest = async () => {
-    console.log("hello")
     try {
       if (contestId && teamSplitted) {
         await updateContest({
           id: contestId,
-          teamSplitted: teamSplitted.result.map((team) => ({
+          teamSplitted: teamSplitted.result.map((team, index) => ({
             totalElo: team.totalElo,
-            color: team.color,
+            color: teamColor[index],
             playerIds: team.players.map((p) => p.id),
           })),
         }).unwrap()
@@ -51,9 +63,15 @@ const SplitTeamPage = () => {
           ) : (
             <>
               {teamSplitted.result.length === 0 ? (
-                <div className="text-center">Chia không thành công. Hãy chia lại</div>
+                <div className="text-center">
+                  Chia không thành công. Hãy chia lại
+                </div>
               ) : (
-                <TeamSplitContainer data={teamSplitted.result} />
+                <TeamSplitContainer
+                  data={teamSplitted.result}
+                  teamColor={teamColor}
+                  setTeamColor={setTeamColor}
+                />
               )}
             </>
           )}
@@ -78,7 +96,15 @@ const SplitTeamPage = () => {
     </div>
   )
 }
-const TeamSplitContainer = ({ data }: { data: TeamSplitResponse[] }) => {
+const TeamSplitContainer = ({
+  data,
+  teamColor,
+  setTeamColor,
+}: {
+  data: TeamSplitResponse[]
+  teamColor: string[]
+  setTeamColor: React.Dispatch<React.SetStateAction<string[]>>
+}) => {
   const teamCount = data.length
   return (
     <div
@@ -88,66 +114,80 @@ const TeamSplitContainer = ({ data }: { data: TeamSplitResponse[] }) => {
         gap: "1rem", // Optional: adds spacing between grid items
       }}>
       {data.map((team, index) => (
-        <TeamResult team={team} key={index} />
+        <div>
+          <TeamResult team={team} teamColor={teamColor[index]} key={index} />
+          <ColorSelect
+            defaultColor={team.color}
+            onChange={(value) => {
+              setTeamColor((colors) => {
+                const newColor = [...colors]
+                newColor[index] = value
+                return newColor
+              })
+            }}
+          />
+        </div>
       ))}
     </div>
   )
 }
-const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
-  const getColor = () => {
-    switch (team.color) {
-      case TeamColor.RED:
-        return {
-          bgColor: "#E97777",
-          textColor: "white",
-          name: "Đỏ",
-        }
-      case TeamColor.WHITE:
-        return {
-          bgColor: "white",
-          textColor: "#000000",
-          name: "Trắng",
-        }
-      case TeamColor.BLUE:
-        return {
-          bgColor: "#687FE5",
-          textColor: "white",
-          name: "Xanh dương",
-        }
-      case TeamColor.GREEN:
-        return {
-          bgColor: "#A5B68D",
-          textColor: "white",
-          name: "Lục",
-        }
-      default:
-        return {
-          bgColor: "white",
-          textColor: "black",
-          name: "Trắng",
-        }
-    }
-  }
+const ColorSelect = ({
+  defaultColor,
+  onChange,
+}: {
+  defaultColor: string
+  onChange: (value: string) => void
+}) => {
+  return (
+    <Select defaultValue={defaultColor} onValueChange={onChange}>
+      <SelectTrigger className="w-full mt-2">
+        <SelectValue placeholder="Màu Team" />
+      </SelectTrigger>
+      <SelectContent>
+        {Object.values(TeamColor).map((color) => (
+          <SelectItem value={color}>{color}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+const TeamResult = ({
+  team,
+  teamColor,
+}: {
+  team: TeamSplitResponse
+  teamColor: string
+}) => {
   return (
     <div
       style={{
-        backgroundColor: getColor().bgColor,
-        color: getColor().textColor,
+        backgroundColor: getTeamColorStyle(teamColor).bgColor,
+        color: getTeamColorStyle(teamColor).textColor,
       }}
       className="p-4 rounded-md border-solid border-gray-400 border-[1px]">
+      <div
+        style={{
+          color: getTeamColorStyle(teamColor).textColor,
+          textAlign: "center",
+          fontSize: 18,
+          fontWeight: "600",
+        }}>
+        {getTeamColorStyle(teamColor).name}
+      </div>
       <ListRender
         data={team.players}
         renderItem={(player, index) => (
-          <div key={index} className="flex flex-row justify-between py-2">
+          <div
+            key={index}
+            className={`flex flex-row justify-between py-2 font-semibold border-b-[2px] border-solid border-[${
+              getTeamColorStyle(teamColor).textColor
+            }]`}>
             <span>{player.name}</span>
             <span>{player.elo}</span>
           </div>
         )}
       />
-      <div
-        className={`flex flex-row justify-between border-t-[2px] border-solid py-2 border-[${
-          getColor().textColor
-        }]`}>
+      <div className={`flex flex-row justify-between pt-2`}>
         <div>Tổng elo: </div>
         <div>{team.totalElo}</div>
       </div>

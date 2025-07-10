@@ -1,8 +1,8 @@
 import { useGetContestDetailQuery } from "@/api/contest"
 import ListRender from "@/components/common/list-render"
 import { Button } from "@/components/ui/button"
+import { getTeamColorStyle } from "@/constant"
 import type { TeamSplitResponse } from "@/types/contest"
-import { TeamColor } from "@/types/team"
 import { Outlet, useLocation, useNavigate, useParams } from "react-router"
 
 const ContestDetail = () => {
@@ -74,55 +74,21 @@ const TeamSplitContainer = ({ data }: { data: TeamSplitResponse[] }) => {
   )
 }
 const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
-  const getColor = () => {
-    switch (team.color) {
-      case TeamColor.RED:
-        return {
-          bgColor: "#E97777",
-          textColor: "white",
-          name: "Đỏ",
-        }
-      case TeamColor.WHITE:
-        return {
-          bgColor: "white",
-          textColor: "#000000",
-          name: "Trắng",
-        }
-      case TeamColor.BLUE:
-        return {
-          bgColor: "#687FE5",
-          textColor: "white",
-          name: "Xanh dương",
-        }
-      case TeamColor.GREEN:
-        return {
-          bgColor: "#A5B68D",
-          textColor: "white",
-          name: "Lục",
-        }
-      default:
-        return {
-          bgColor: "white",
-          textColor: "black",
-          name: "Trắng",
-        }
-    }
-  }
   return (
     <div
       style={{
-        backgroundColor: getColor().bgColor,
-        color: getColor().textColor,
+        backgroundColor: getTeamColorStyle(team.color).bgColor,
+        color: getTeamColorStyle(team.color).textColor,
       }}
       className="p-4 rounded-md border-solid border-gray-400 border-[1px]">
       <div
         style={{
-          color: getColor().textColor,
+          color: getTeamColorStyle(team.color).textColor,
           textAlign: "center",
           fontSize: 18,
           fontWeight: "600",
         }}>
-        {getColor().name}
+        {getTeamColorStyle(team.color).name}
       </div>
       <ListRender
         data={team.players}
@@ -130,7 +96,7 @@ const TeamResult = ({ team }: { team: TeamSplitResponse }) => {
           <div
             key={index}
             className={`flex flex-row justify-between py-2 font-semibold border-b-[2px] border-solid border-[${
-              getColor().textColor
+              getTeamColorStyle(team.color).textColor
             }]`}>
             <span>{player.name}</span>
             <span>{player.elo}</span>
